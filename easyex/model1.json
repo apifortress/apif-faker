@@ -1,0 +1,16 @@
+{
+  "id":"uuid",
+  "ssn": "validSSN",
+  "name": "fullName",
+  "profession": "profession",
+  "email": "emailAddress",
+  "age": "integer",
+  "subscribed": "bool",
+  "nonesiste": "abdefg",
+  "creditCard": ["creditCardNumber","creditCardExpiry","creditCardType"],
+  "address": {
+    "city": "cityName",
+    "street": "streetName",
+    "building": "buildingNumber"
+  }
+}

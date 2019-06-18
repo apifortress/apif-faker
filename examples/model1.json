@@ -1,0 +1,11 @@
+{
+  "id":"uuid",
+  "ssn": "validSSN",
+  "name": "fullName",
+  "profession": "profession",
+  "email": "emailAddress",
+  "age": "integer",
+  "subscribed": "bool",
+  "nonesiste": "abdefg",
+  "creditCard": ["creditCardNumber","creditCardExpiry","creditCardType"]
+}

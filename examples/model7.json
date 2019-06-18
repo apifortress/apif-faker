@@ -1,0 +1,39 @@
+{
+  "father": {
+    "id": "uuid",
+    "ssn": "validSSN",
+    "name": "fullName",
+    "profession": "profession",
+    "email": "emailAddress",
+    "brother": {
+      "id": "uuid",
+      "ssn": "validSSN",
+      "name": "fullName",
+      "profession": "profession",
+      "email": "emailAddress",
+      "nephwe": {
+        "id": "uuid",
+        "ssn": "validSSN",
+        "name": "fullName",
+        "profession": "profession",
+        "email": "emailAddress",
+        "girlfriend": {
+          "id": "uuid",
+          "ssn": "validSSN",
+          "name": "fullName",
+          "profession": "profession",
+          "email": "emailAddress"
+        }
+      }
+    }
+  },
+
+  "mother": {
+    "id": "uuid",
+    "ssn": "validSSN",
+    "name": "fullName",
+    "profession": "profession",
+    "email": "emailAddress"
+  }
+
+}

@@ -1,0 +1,6 @@
+{
+  "companiesAndProducts": [
+    {"company": {"company": "companyName","suffix": "suffix", "industry": "industry"}},
+    {"product": {"product": "productName","material": "material","price": "price"}}
+  ]
+}

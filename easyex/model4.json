@@ -1,0 +1,18 @@
+{
+  "id":"uuid",
+  "ssn": "validSSN",
+  "name": "fullName",
+  "profession": "profession",
+  "email": "emailAddress",
+  "address": {
+    "city": "cityName",
+    "street": "streetName",
+    "building": "buildingNumber",
+    "personal": {
+      "age": "integer",
+      "subscribed": "bool",
+      "nonesiste": "abdefg"
+    }
+  }
+
+}
