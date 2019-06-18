@@ -70,7 +70,7 @@ public class FakeValues implements FakeValuesInterface {
             return null;
         }
 
-        final Map valuesMap = new Yaml().loadAs(stream, Map.class);
+        final Map valuesMap = (Map) new Yaml().load(stream);
         Map localeBased = (Map) valuesMap.get(locale.getLanguage());
         if (localeBased == null) {
             localeBased = (Map) valuesMap.get(filename);
