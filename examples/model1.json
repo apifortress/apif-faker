@@ -7,5 +7,7 @@
   "age": "integer",
   "subscribed": "bool",
   "nonesiste": "abdefg",
-  "creditCard": ["creditCardNumber","creditCardExpiry","creditCardType"]
+  "creditCard": ["creditCardNumber","creditCardExpiry","creditCardType"],
+  "phone": "phone",
+  "mobile": "mobile"
 }

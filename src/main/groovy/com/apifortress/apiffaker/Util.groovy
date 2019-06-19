@@ -12,7 +12,7 @@ class Util {
     }
 
     //generate random values
-    public def fillJson(String json){
+    public def fillNodes(String json){
         def result
         def jsonSlurper = new JsonSlurper().parseText(json)
 
@@ -212,7 +212,6 @@ class Util {
         int countNodes = deep ? countNodesInDepth(arg) : countNodesFlat(arg)
 
         def nodes = faker.integerList(2,countNodes,nodesToInsert)
-
         println "Nodes count " + countNodes
         println "Insert after Nodes "+nodes
 
@@ -234,13 +233,10 @@ class Util {
             def uuid = faker.uuid()
             def type = getArgType(arg)
             def method = getFMethod(type)
-            println "Removing "+key+ " from "+ parent
-            println "Type " + type
-            println "New method: " + method
+            println "Substituting "+key+ " Type: " + type + " With: " + uuid + " Method: " + method
 
             if (parent instanceof Map) {
                 parent.remove("$key")
-                //println "Inserting "+uuid+" : "+method+ " in "+ parent + " after "+ iteration + "(item: " + clone +" )"
                 parent.put(uuid,method)
             }
 
@@ -248,7 +244,6 @@ class Util {
                 int index = parent.indexOf(key)
                 if (index >= 0) {
                     parent.remove(index)
-                    //println "Inserting "+ method+ " in "+ parent + " after "+ iteration + "(item: " + clone +" )"
                     parent.add(method)
                 }
             }
@@ -277,11 +272,16 @@ class Util {
         if (arg instanceof List) {
             arg.each {
                 iteration++
+
                 if (iteration in nodes) {
-                    println "Removing "+it+ " from "+ arg
                     int index = clone.indexOf(it)
                     if (index >= 0) {
+                        def uuid = faker.uuid()
+                        def type = getArgType(arg)
+                        def method = getFMethod(type)
+                        println "Substituting "+arg+ " Type: " + type + " With: " + uuid + " Method: " + method
                         clone.remove(index)
+                        clone.add(method)
                     }
 
                 }
@@ -292,9 +292,14 @@ class Util {
         if (arg instanceof Map) {
             arg.each {itKey,itValue ->
                 iteration++
+
                 if (iteration in nodes) {
-                    println "Removing "+itKey+ " from "+ arg
+                    def uuid = faker.uuid()
+                    def type = getArgType(itValue)
+                    def method = getFMethod(type)
+                    println "Substituting "+itKey+ " Type: " + type + " With: " + uuid + " Method: " + method
                     clone.remove("$itKey")
+                    clone.put(uuid,method)
                 }
             }
         }
@@ -304,18 +309,15 @@ class Util {
 
 
     private int countNodesInDepth(def arg){
-        int nodes = 0
+        int nodes = 1
 
         if (arg instanceof List) {
-            nodes = arg.size()
             arg.each {
-                if (it instanceof Map) nodes--
                 nodes += countNodesInDepth(it)
             }
         }
 
         if (arg instanceof Map) {
-            nodes = arg.size()
             arg.each {key,value ->
                 nodes += countNodesInDepth(value)
             }
@@ -390,6 +392,8 @@ class Util {
             ["firstName":"string"],
             ["lastName":"string"],
             ["timeZone":"string"],
+            ["phone":"string"],
+            ["mobile":"string"],
             ["validID":"string"],
             ["invalidID":"string"],
             ["validSSN":"string"],

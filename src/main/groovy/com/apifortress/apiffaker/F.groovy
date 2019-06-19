@@ -41,6 +41,9 @@ public class F {
     public String lastName() {return faker.address().lastName()}
     public String timeZone() {return faker.address().timeZone()}
 
+    public String mobile(){return  faker.phoneNumber().cellPhone()}
+    public String phone(){return  faker.phoneNumber().phoneNumber()}
+
     public String validID() { return faker.idNumber().valid() }
     public String invalidID() { return faker.idNumber().invalid() }
 

@@ -33,6 +33,8 @@ This library based on java faker provides several methods to generate fake data
   - **invalidID**(): provides random invalid ID
   - **validSSN**(): provides random valid SSN
   - **invalidSSN**(): provides random invalid SSN  
+  - **phone**(): provides random phone number 
+  - **mobile**(): provides random mobile number
   
 ### Internet  
   - **emailAddress**(): provides random email address 
