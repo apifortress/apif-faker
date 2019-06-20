@@ -9,5 +9,6 @@
   "nonesiste": "abdefg",
   "creditCard": ["creditCardNumber","creditCardExpiry","creditCardType"],
   "phone": "phone",
-  "mobile": "mobile"
+  "mobile": "mobile",
+  "null": "null"
 }

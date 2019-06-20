@@ -7,11 +7,21 @@ import org.omg.CORBA.MARSHAL
 class Util {
 
     F faker
-    public Util() {
-        faker =new F()
+    public Util(String loc = null) {
+        faker = new F(loc)
+        faker.templateStyle = true
     }
 
-    //generate random values
+    public setLocale(String loc){
+        faker = new F(loc)
+        faker.templateStyle = true
+    }
+
+    /**
+     * fills a json model with random values
+     * @param json
+     * @return
+     */
     public def fillNodes(String json){
         def result
         def jsonSlurper = new JsonSlurper().parseText(json)
@@ -21,7 +31,13 @@ class Util {
         return result
     }
 
-    //remove nodes
+    /**
+     * remove from json model notedToRemove nodes. can work both in depth mode or just the current level
+     * @param json model
+     * @param nodesToRemove nodes to remove
+     * @param deep if true removes in depth if false remove nodes at current level
+     * @return
+     */
     public def removeNodes(String json,int nodesToRemove,boolean deep = true){
         def arg = new JsonSlurper().parseText(json)
         def clone = new JsonSlurper().parseText(json)
@@ -108,7 +124,13 @@ class Util {
         return iteration
     }
 
-    //insert nodes
+    /**
+     * inserts in a json model nodesToInsert nodes. can work both in depth mode or just the current level
+     * @param json model
+     * @param nodesToInsert nodes to be inserted
+     * @param deep if true removes in depth if false inserts nodes at current level
+     * @return
+     */
     public def insertNodes(String json,int nodesToInsert,boolean deep = true){
         def arg = new JsonSlurper().parseText(json)
         def clone = new JsonSlurper().parseText(json)
@@ -140,14 +162,14 @@ class Util {
 
             if (parent instanceof Map){
                 println "Inserting "+uuid+" : "+method+ " in "+ parent + " after "+ iteration + "(item: " + clone +" )"
-                parent.put(uuid,method)
+                parent.put(uuid,"\${"+method+"}")
             }
 
             if (parent instanceof List){
                 int index = parent.indexOf(key)
                 if (index >= 0) {
                     println "Inserting "+ method+ " in "+ parent + " after "+ iteration + "(item: " + clone +" )"
-                    parent.add(method)
+                    parent.add("\${"+method+"}")
                 }
             }
         }
@@ -181,7 +203,7 @@ class Util {
                     int index = clone.indexOf(it)
                     if (index >= 0) {
                         println "Insertin "+ method+ " in "+ clone + " after "+ iteration
-                        clone.add(method)
+                        clone.add("\${"+method+"}")
                     }
 
                 }
@@ -196,7 +218,7 @@ class Util {
                 def method = getFMethod()
                 if (iteration in nodes) {
                     println "Inserting "+uuid+" : "+method+ " in "+ clone + " after "+ iteration
-                    clone.put(uuid,method)
+                    clone.put(uuid,"\${"+method+"}")
                 }
             }
         }
@@ -204,16 +226,22 @@ class Util {
         return iteration
     }
 
-    //insert nodes
-    public def substituteNodes(String json,int nodesToInsert,boolean deep = true){
+    /**
+     * substitutes in a json model nodesToInsert nodes. can work both in depth mode or just the current level
+     * @param json model
+     * @param nodesToInsert nodes to be substituted
+     * @param deep if true removes in depth if false substitutes nodes at current level
+     * @return
+     */
+    public def substituteNodes(String json,int nodesToSubstitute,boolean deep = true){
         def arg = new JsonSlurper().parseText(json)
         def clone = new JsonSlurper().parseText(json)
 
         int countNodes = deep ? countNodesInDepth(arg) : countNodesFlat(arg)
 
-        def nodes = faker.integerList(2,countNodes,nodesToInsert)
+        def nodes = faker.integerList(2,countNodes,nodesToSubstitute)
         println "Nodes count " + countNodes
-        println "Insert after Nodes "+nodes
+        println "Substitutings Nodes "+nodes
 
         if (deep) {
             println "Deep"
@@ -237,14 +265,14 @@ class Util {
 
             if (parent instanceof Map) {
                 parent.remove("$key")
-                parent.put(uuid,method)
+                parent.put(uuid,"\${"+method+"}")
             }
 
             if (parent instanceof List){
                 int index = parent.indexOf(key)
                 if (index >= 0) {
                     parent.remove(index)
-                    parent.add(method)
+                    parent.add("\${"+method+"}")
                 }
             }
         }
@@ -281,7 +309,7 @@ class Util {
                         def method = getFMethod(type)
                         println "Substituting "+arg+ " Type: " + type + " With: " + uuid + " Method: " + method
                         clone.remove(index)
-                        clone.add(method)
+                        clone.add("\${"+method+"}")
                     }
 
                 }
@@ -299,7 +327,7 @@ class Util {
                     def method = getFMethod(type)
                     println "Substituting "+itKey+ " Type: " + type + " With: " + uuid + " Method: " + method
                     clone.remove("$itKey")
-                    clone.put(uuid,method)
+                    clone.put(uuid,"\${"+method+"}")
                 }
             }
         }
@@ -351,13 +379,13 @@ class Util {
             return fMethods[faker.integer(1,fMethods.size())]?.keySet()[0]
     }
 
-    public def filterMethods(String excludedType){
+    private def filterMethods(String excludedType){
         if (excludedType)
             return fMethods.findAll({method -> method.values()[0] != excludedType})
         else return fMethods
     }
 
-    public def getArgType(def arg){
+    private def getArgType(def arg){
         if (arg instanceof Map || arg instanceof List)
             return null
 

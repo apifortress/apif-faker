@@ -1,0 +1,23 @@
+{
+  "0c7b04df-9e76-4684-9531-420032e081c0": "${suffix}",
+  "1ad16faf-ae66-48ae-90e6-43b384df56ce": "${countryCode}",
+  "age": "${integer}",
+  "creditCard": [
+    "${creditCardNumber}",
+    "${creditCardExpiry}",
+    "${creditCardType}"
+  ],
+  "d265c7f5-33a2-49aa-a6bf-9424ab65c46e": "${country}",
+  "email": "${emailAddress}",
+  "id": "${uuid}",
+  "mobile": "${mobile}",
+  "nonesiste1": "${nonesiste1}",
+  "nonesiste2": "nonesiste2",
+  "nonesiste3": "${nonesiste3",
+  "nonesiste6": "$nonesiste6",
+  "null": "null",
+  "phone": "${phone}",
+  "profession": "${profession}",
+  "ssn": "${validSSN}",
+  "subscribed": "${bool}"
+}

@@ -7,16 +7,37 @@ import groovy.json.JsonSlurper
 class Main {
 
     public static void main(String[] args) {
+        def example = "examples/model1BIS2.json"
+        fillNodes(example)
+        //removeNodes(example,3,false)
+        //insertNodes(example,3)
+        //substituteNodes(example,3)
+        //substituteNodes(example,3,false)
+        //stressTest()
+        //printRandomThings()
+    }
 
+    static void stressTest() {
         F faker = new F()
-        int nodes = faker.integer(1,10)
-        def example = 'examples/model10.json'
-        substituteNodes(example,nodes)
-        /*fillNodes(example)
-        removeNodes(example,3,false)
-        insertNodes(example,3)
-        substituteNodes(example,3)
-        substituteNodes(example,3,false)*/
+        int tests = faker.integer(5000,50000)
+        int iteration = 0
+        println "Tests " + tests
+        tests.times {
+            iteration++
+            println "*** Test number " + iteration
+            int nodes = faker.integer(1, 10)
+            println "***** Nodes " + nodes
+            def exampleDesinence = faker.integer(1,10)
+            def example = "examples/model"+exampleDesinence+".json"
+            println example
+            def m = faker.integer(1,4)
+            switch (m){
+                case 1 : substituteNodes(example, nodes); break;
+                case 2 : fillNodes(example); break;
+                case 3 : removeNodes(example,nodes); break;
+                case 4 : insertNodes(example,nodes); break;
+            }
+        }
     }
 
     private static void printRandomThings(){
@@ -25,7 +46,10 @@ class Main {
         println f.single(["city","streetName"])
         println f.single([city: "city",streetname: "streetName"])
         println f.collection(2,[city: "city",streetname: "streetName"])
+        println f.single(["x1","x2"])
         println f.streetAddressNumber()
+        println f.domainName()
+        println f.domainWord()
     }
 
     private static void fillNodes(String path){

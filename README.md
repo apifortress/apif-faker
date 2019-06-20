@@ -4,14 +4,14 @@ This library based on java faker provides several methods to generate fake data
 ## List of Methods
 ### Addresses and Countries
   - **streetName**(): provides random street name
-  - **streetAddressNumber**(): provides random address number. 
+  - **streetAddressNumber**(): provides random address number 
   - **streetAddress**(<boolean secondary>): provides random street and address number. If secondary specifided provides apt number.
   - **secondaryAddress**(): provides random apt number
   - **zipCode**(<String state>): provides random zip code. If state provided provides proper zip code for the state **(valid only for US states) 
   - **streetSuffix**(): provides random street suffix
   - **streetPrefix**(): provides random street prefix
   - **citySuffix**(): provides random city suffix
-  - **cityPrefix**(): provides random street prefix
+  - **cityPrefix**(): provides random city prefix
   - **city**(): provides random city Name
   - **cityName**(): provides random city Name
   - **state**(): provides random state/province
@@ -20,7 +20,7 @@ This library based on java faker provides several methods to generate fake data
   - **country**(): provides random country
   - **countryCode**(): provides random country code
   - **countryCodeSL**(): provides random country code in small letters
-  - **countryCode3**(): provides random country code in small letters on 3 digits
+  - **countryCode3d**(): provides random country code in small letters on 3 digits
   - **capital**(): provides random capital city    
   
 ### People and People identity
@@ -42,11 +42,11 @@ This library based on java faker provides several methods to generate fake data
   - **domainWord**(): provides random word
   - **domainSuffix**(): provides random suffix
   - **url**(): provides random url
-  - **password**(<minimumLength,maximumLength,includeUppercase,includeSpecial>): provides random passwor
+  - **password**(<minimumLength,maximumLength,includeUppercase,includeSpecial>): provides random password
   
 ### Credit Card  
   - **creditCardNumber**(): provides random credit card number
-  - **creditCardExpiry**(): provides random credi card expire date
+  - **creditCardExpiry**(): provides random credit card expire date
   - **creditCardType**(): provides random credit card type
   
 ### Products  
@@ -65,9 +65,12 @@ This library based on java faker provides several methods to generate fake data
   - **currencyCode**(): provides random currency code
   
 ### Random Numbers  
-  - **integer**(<min,max>): provides random int number
+  - **integer**(<min,max>): provides random integer number
   - **decimal**(<min,max,maxdecimals>): provides random decimal number
   - **uuid**(): provides random unique identifier
+  
+### Boolean
+  - **bool**(): provides random boolean value
   
 ### Collection/single Data  
   - **collection**(<number_of_elements,"method">): 
