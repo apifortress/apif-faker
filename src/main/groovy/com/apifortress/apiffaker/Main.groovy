@@ -7,30 +7,32 @@ import groovy.json.JsonSlurper
 class Main {
 
     public static void main(String[] args) {
-        def example = "examples/model1BIS2.json"
-        fillNodes(example)
+        //def example = "examples/model1BIS2.json"
+        def example = "examples/model3.json"
+        //fillNodes(example)
         //removeNodes(example,3,false)
         //insertNodes(example,3)
         //substituteNodes(example,3)
         //substituteNodes(example,3,false)
-        //stressTest()
+        //stressTest(100,500)
+        stressTest(100,500,1)
         //printRandomThings()
     }
 
-    static void stressTest() {
+    static void stressTest(int i,int j,int m = 0) {
         F faker = new F()
-        int tests = faker.integer(5000,50000)
+        int tests = faker.integer(i,j)
         int iteration = 0
         println "Tests " + tests
         tests.times {
             iteration++
             println "*** Test number " + iteration
-            int nodes = faker.integer(1, 10)
+            int nodes = faker.integer(1, 20)
             println "***** Nodes " + nodes
-            def exampleDesinence = faker.integer(1,10)
+            def exampleDesinence = faker.integer(1,9)
             def example = "examples/model"+exampleDesinence+".json"
             println example
-            def m = faker.integer(1,4)
+            m = m == 0 ? faker.integer(1,4) : m
             switch (m){
                 case 1 : substituteNodes(example, nodes); break;
                 case 2 : fillNodes(example); break;

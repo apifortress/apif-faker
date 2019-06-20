@@ -1,15 +1,15 @@
 [
     {
         "companiesAndProducts": [
-            {"company": {"company": "companyName","suffix": "suffix", "industry": "industry"}},
-            {"product": {"product": "productName","material": "material","price": "price"}}
+            {"company": {"company": "${companyName}","suffix": "${suffix}", "industry": "${industry}"}},
+            {"product": {"product": "${productName}","material": "${material}","price": "price"}}
         ]
     },
-    ["companyName","suffix","industry",
+    ["${companyName}","${suffix}","industry",
         {
             "companiesAndProducts": [
-                {"company": {"company": "companyName","suffix": "suffix", "industry": "industry"}},
-                {"product": {"product": "productName","material": "material","price": "price"}}
+                {"company": {"company": "${companyName}","suffix": "suffix", "industry": "industry"}},
+                {"product": {"product": "${productName}","material": "material","price": "price"}}
             ]
         },
         {
@@ -17,19 +17,19 @@
         }
     ],
     {
-        "id":"uuid",
-        "ssn": "validSSN",
-        "name": "fullName",
-        "profession": "profession",
-        "email": "emailAddress",
+        "id":"${uuid}",
+        "ssn": "${validSSN}",
+        "name": "${fullName}",
+        "profession": "${profession}",
+        "email": "${emailAddress}",
         "address": {
-            "city": "cityName",
-            "street": "streetName",
-            "bulding": "buildingNumber"
+            "city": "${cityName}",
+            "street": "${streetName}",
+            "bulding": "${buildingNumber}"
         },
-        "age": "integer",
-        "subscribed": "bool",
+        "age": "${integer}",
+        "subscribed": "${bool}",
         "nonesiste": "abdefg",
-        "creditCard": ["creditCardNumber","creditCardExpiry","creditCardType"]
+        "creditCard": ["${creditCardNumber}","creditCardExpiry","creditCardType"]
     }
 ]

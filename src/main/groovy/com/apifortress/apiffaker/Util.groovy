@@ -162,14 +162,14 @@ class Util {
 
             if (parent instanceof Map){
                 println "Inserting "+uuid+" : "+method+ " in "+ parent + " after "+ iteration + "(item: " + clone +" )"
-                parent.put(uuid,"\${"+method+"}")
+                parent.put(uuid,method)
             }
 
             if (parent instanceof List){
                 int index = parent.indexOf(key)
                 if (index >= 0) {
                     println "Inserting "+ method+ " in "+ parent + " after "+ iteration + "(item: " + clone +" )"
-                    parent.add("\${"+method+"}")
+                    parent.add(method)
                 }
             }
         }
@@ -203,7 +203,7 @@ class Util {
                     int index = clone.indexOf(it)
                     if (index >= 0) {
                         println "Insertin "+ method+ " in "+ clone + " after "+ iteration
-                        clone.add("\${"+method+"}")
+                        clone.add(method)
                     }
 
                 }
@@ -218,7 +218,7 @@ class Util {
                 def method = getFMethod()
                 if (iteration in nodes) {
                     println "Inserting "+uuid+" : "+method+ " in "+ clone + " after "+ iteration
-                    clone.put(uuid,"\${"+method+"}")
+                    clone.put(uuid,method)
                 }
             }
         }
@@ -263,16 +263,17 @@ class Util {
             def method = getFMethod(type)
             println "Substituting "+key+ " Type: " + type + " With: " + uuid + " Method: " + method
 
+            //generare un array o un mappa casuale se arg è array o mappa ?
             if (parent instanceof Map) {
                 parent.remove("$key")
-                parent.put(uuid,"\${"+method+"}")
+                parent.put(uuid,method)
             }
 
             if (parent instanceof List){
                 int index = parent.indexOf(key)
                 if (index >= 0) {
                     parent.remove(index)
-                    parent.add("\${"+method+"}")
+                    parent.add(method)
                 }
             }
         }
@@ -309,7 +310,7 @@ class Util {
                         def method = getFMethod(type)
                         println "Substituting "+arg+ " Type: " + type + " With: " + uuid + " Method: " + method
                         clone.remove(index)
-                        clone.add("\${"+method+"}")
+                        clone.add(method)
                     }
 
                 }
@@ -327,14 +328,13 @@ class Util {
                     def method = getFMethod(type)
                     println "Substituting "+itKey+ " Type: " + type + " With: " + uuid + " Method: " + method
                     clone.remove("$itKey")
-                    clone.put(uuid,"\${"+method+"}")
+                    clone.put(uuid,method)
                 }
             }
         }
 
         return iteration
     }
-
 
     private int countNodesInDepth(def arg){
         int nodes = 1
@@ -371,12 +371,35 @@ class Util {
     }
 
     private def getFMethod(String excludedType = null){
-        if (excludedType) {
+        //if (excludedType) {
+        if ("map".equals(excludedType)) {
+            def result =[:]
+            def nodes = faker.integer()
+            nodes.times {
+                result.put(faker.uuid(),"\${"+fMethods[faker.integer(1,fMethods.size())]?.keySet()[0]+"}")
+            }
+            return result
+        } else if ("list".equals(excludedType)) {
+            def result = []
+            def nodes = faker.integer()
+            nodes.times {
+                result.add("\${"+fMethods[faker.integer(1, fMethods.size())]?.keySet()[0]+"}")
+            }
+            return result
+        } else  {
+            def filteredMethods = filterMethods(excludedType)
+            return "\${"+filteredMethods[faker.integer(1, filteredMethods.size())].keySet()[0]+"}"
+        }
+
+        /*
+        if (!"map".equals(excludedType) && !"list".equals(excludedType)) {
             def filteredMethods = filterMethods(excludedType)
             return filteredMethods[faker.integer(1, filteredMethods.size())].keySet()[0]
         }
         else
             return fMethods[faker.integer(1,fMethods.size())]?.keySet()[0]
+
+         */
     }
 
     private def filterMethods(String excludedType){
@@ -386,8 +409,14 @@ class Util {
     }
 
     private def getArgType(def arg){
-        if (arg instanceof Map || arg instanceof List)
-            return null
+        /*if (arg instanceof Map || arg instanceof List)
+            return null*/
+
+        if (arg instanceof Map)
+            return "map"
+
+        if (arg instanceof List)
+            return "list"
 
         def method = fMethods.findAll({it.keySet()[0] == arg})[0]
         if (method)

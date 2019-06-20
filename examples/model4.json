@@ -1,14 +1,14 @@
 [
-  "companyName",
+  "${companyName}",
   {
-  "id":"uuid",
-  "ssn": "validSSN"},
-  {  "name": "fullName",
-    "profession": "profession",
-    "email": "emailAddress"
+    "id":"${uuid}",
+    "ssn": "${validSSN}"},
+  {  "name": "${fullName}",
+    "profession": "${profession}",
+    "email": "${emailAddress}"
   },
-  "cityName",
-  ["companyName","suffix","industry"],
+  "${cityName}",
+  ["${companyName}","${suffix}","${industry}"],
   {
     "ciccio": "null"
   }
