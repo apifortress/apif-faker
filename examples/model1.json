@@ -7,10 +7,10 @@
   "age": "${integer}",
   "subscribed": "${bool}",
   "nonesiste": "${abdefg}",
-  "creditCard": ["${creditCardNumber}","${creditCardExpiry}","creditCardType}"],
+  "creditCard": ["${creditCardNumber}","${creditCardExpiry}","${creditCardType}"],
   "phone": "${phone}",
   "mobile": "${mobile}",
-  "null": "${null}",
+  "null": "null",
   "address": {
     "city": "${cityName}",
     "street": "${streetName}",

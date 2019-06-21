@@ -2,9 +2,19 @@ package com.apifortress.apiffaker
 
 
 import groovy.json.JsonSlurper
-import org.omg.CORBA.MARSHAL
 
 class Util {
+
+    static final int MODE_FILL = 1
+    static final int MODE_REMOVE = 2
+    static final int MODE_INSERT = 3
+    static final int MODE_SUBSTITUTE = 4
+
+    static final int MODE_REMOVE_FLAT = 5
+    static final int MODE_INSERT_FLAT = 6
+    static final int MODE_SUBSTITUTE_FLAT = 7
+
+    private static final modes=["Fill","Deep Remove","Deep Insert","Deep Substitute","Flat Remove","Flat Insert","Flat Substitute"]
 
     F faker
     public Util(String loc = null) {
@@ -22,7 +32,7 @@ class Util {
      * @param json
      * @return
      */
-    public def fillNodes(String json){
+    public def fillModel(String json){
         def result
         def jsonSlurper = new JsonSlurper().parseText(json)
 
@@ -31,323 +41,145 @@ class Util {
         return result
     }
 
-    /**
-     * remove from json model notedToRemove nodes. can work both in depth mode or just the current level
-     * @param json model
-     * @param nodesToRemove nodes to remove
-     * @param deep if true removes in depth if false remove nodes at current level
-     * @return
-     */
-    public def removeNodes(String json,int nodesToRemove,boolean deep = true){
-        def arg = new JsonSlurper().parseText(json)
-        def clone = new JsonSlurper().parseText(json)
+    public def manipulateModel(int manipulationMode,String jsonModel,int nodesToManipulate){
+        def model = new JsonSlurper().parseText(jsonModel)
+        def clone = new JsonSlurper().parseText(jsonModel)
 
-        int countNodes = deep ? countNodesInDepth(arg) : countNodesFlat(arg)
-
-        def nodes = faker.integerList(2,countNodes,nodesToRemove)
-
-        println "Nodes count " + countNodes
-        println "Nodes to remove "+nodes
-
-        if (deep) {
-            println "Deep"
-            removeNodeInDepth(arg, clone, nodes, 0)
-        } else {
-            println "Flat"
-            removeNodeFlat(arg, clone, nodes, 0)
+        switch (manipulationMode){
+            case MODE_REMOVE:
+            case MODE_INSERT:
+            case MODE_SUBSTITUTE:
+                int modelNodes = deepCount(model)
+                def nodes = faker.integerList(2,modelNodes,nodesToManipulate)
+                println "Mode: " + modes[manipulationMode-1]+" Model Nodes: " + modelNodes + " to manipulate: "+nodes
+                deepManipulation(manipulationMode,model,clone,nodes,0); break;
+            case MODE_REMOVE_FLAT:
+            case MODE_INSERT_FLAT:
+            case MODE_SUBSTITUTE_FLAT:
+                int modelNodes = flatCount(model)
+                def nodes = faker.integerList(2,modelNodes,nodesToManipulate)
+                println "Mode: " + modes[manipulationMode-1]+" Model Nodes: " + modelNodes + " to manipulate: "+nodes
+                flatManipulation(manipulationMode,model,clone,nodes); break;
         }
 
         return clone
     }
 
-    private int removeNodeInDepth(def arg,def clone, def nodes, int iteration, def key = null,def parent = null){
+    private int deepManipulation(int manipulationMode,def model,def clone, def nodes, int iteration, def key = null,def parent = null){
         iteration++
 
         if (iteration in nodes) {
-            println "Removing "+key+ " from "+ parent
-            if (parent instanceof Map)
-                parent.remove("$key")
-
-            if (parent instanceof List){
-                int index = parent.indexOf(key)
-                if (index >= 0) {
-                    parent.remove(index)
-                }
-            }
+            manipulateNode(manipulationMode,model,key,parent,iteration)
         }
         //array
-        if (arg instanceof List) {
-            arg.each {
+        if (model instanceof List) {
+            model.each {
                 int index = clone.indexOf(it)
-                iteration = removeNodeInDepth(it,clone[index], nodes, iteration,it,clone)
+                iteration = deepManipulation(manipulationMode,it,clone[index], nodes, iteration,it,clone)
             }
         }
 
         //mappe
-        if (arg instanceof Map) {
-            arg.each {itKey,itValue ->
-                iteration = removeNodeInDepth(itValue, clone."${itKey}", nodes, iteration,itKey,clone)
+        if (model instanceof Map) {
+            model.each {itKey,itValue ->
+                iteration = deepManipulation(manipulationMode,itValue, clone."${itKey}", nodes, iteration,itKey,clone)
             }
         }
 
         return iteration
     }
 
-    private int removeNodeFlat(def arg,def clone, def nodes, int iteration){
-
+    private int flatManipulation(int manipulationMode,def model,def clone, def nodes){
+        int iteration = 0
         //array
-        if (arg instanceof List) {
-            arg.each {
+        if (model instanceof List) {
+            model.each {
                 iteration++
                 if (iteration in nodes) {
-                    println "Removing "+it+ " from "+ arg
-                    int index = clone.indexOf(it)
+                    manipulateNode(manipulationMode,it,it,clone,iteration)
+                }
+            }
+        }
+
+        //mappe
+        if (model instanceof Map) {
+            model.each {itKey,itValue ->
+                iteration++
+                if (iteration in nodes) {
+                    manipulateNode(manipulationMode,itValue,itKey,clone,iteration)
+                }
+            }
+        }
+
+        return iteration
+    }
+
+    public def manipulateNode(int manipulationMode, def model,def key, def parent,int iteration) {
+        switch (manipulationMode){
+            case MODE_REMOVE:
+            case MODE_REMOVE_FLAT:
+                println "Removing "+key+ " from "+ parent
+                if (parent instanceof Map)
+                    parent.remove("$key")
+
+                if (parent instanceof List){
+                    int index = parent.indexOf(key)
                     if (index >= 0) {
-                        clone.remove(index)
+                        parent.remove(index)
                     }
-
                 }
-            }
-        }
-
-        //mappe
-        if (arg instanceof Map) {
-            arg.each {itKey,itValue ->
-                iteration++
-                if (iteration in nodes) {
-                    println "Removing "+itKey+ " from "+ arg
-                    clone.remove("$itKey")
-                }
-            }
-        }
-
-        return iteration
-    }
-
-    /**
-     * inserts in a json model nodesToInsert nodes. can work both in depth mode or just the current level
-     * @param json model
-     * @param nodesToInsert nodes to be inserted
-     * @param deep if true removes in depth if false inserts nodes at current level
-     * @return
-     */
-    public def insertNodes(String json,int nodesToInsert,boolean deep = true){
-        def arg = new JsonSlurper().parseText(json)
-        def clone = new JsonSlurper().parseText(json)
-
-        int countNodes = deep ? countNodesInDepth(arg) : countNodesFlat(arg)
-
-        def nodes = faker.integerList(2,countNodes,nodesToInsert)
-
-        println "Nodes count " + countNodes
-        println "Insert after Nodes "+nodes
-
-        if (deep) {
-            println "Deep"
-            insertNodeInDepth(arg, clone, nodes, 0)
-        } else {
-            println "Flat"
-            insertNodeFlat(arg, clone, nodes, 0)
-        }
-
-        return clone
-    }
-
-    private int insertNodeInDepth(def arg,def clone, def nodes, int iteration, def key = null,def parent = null) {
-        iteration++
-
-        if (iteration in nodes) {
-            def uuid = faker.uuid()
-            def method = getFMethod()
-
-            if (parent instanceof Map){
-                println "Inserting "+uuid+" : "+method+ " in "+ parent + " after "+ iteration + "(item: " + clone +" )"
-                parent.put(uuid,method)
-            }
-
-            if (parent instanceof List){
-                int index = parent.indexOf(key)
-                if (index >= 0) {
-                    println "Inserting "+ method+ " in "+ parent + " after "+ iteration + "(item: " + clone +" )"
-                    parent.add(method)
-                }
-            }
-        }
-        //array
-        if (arg instanceof List) {
-            arg.each {
-                int index = clone.indexOf(it)
-                iteration = insertNodeInDepth(it,clone[index], nodes, iteration,it,clone)
-            }
-        }
-
-        //mappe
-        if (arg instanceof Map) {
-            arg.each {itKey,itValue ->
-                iteration = insertNodeInDepth(itValue, clone."${itKey}", nodes, iteration,itKey,clone)
-            }
-        }
-
-        return iteration
-    }
-
-    private int insertNodeFlat(def arg,def clone, def nodes, int iteration){
-
-        //array
-        if (arg instanceof List) {
-            arg.each {
-                iteration++
+                break;
+            case MODE_INSERT:
+            case MODE_INSERT_FLAT:
                 def uuid = faker.uuid()
-                def method = getFMethod()
-                if (iteration in nodes) {
-                    int index = clone.indexOf(it)
-                    if (index >= 0) {
-                        println "Insertin "+ method+ " in "+ clone + " after "+ iteration
-                        clone.add(method)
-                    }
+                def method = getRandomFMethod()
+                println "Inserting "+uuid+" : "+method+ " in "+ parent + " after "+ iteration
 
+                if (parent instanceof Map)
+                    parent.put(uuid,method)
+
+                if (parent instanceof List){
+                    int index = parent.indexOf(key)
+                    if (index >= 0)
+                        parent.add(method)
                 }
-            }
-        }
-
-        //mappe
-        if (arg instanceof Map) {
-            arg.each {itKey,itValue ->
-                iteration++
+                break;
+            case MODE_SUBSTITUTE:
+            case MODE_SUBSTITUTE_FLAT:
                 def uuid = faker.uuid()
-                def method = getFMethod()
-                if (iteration in nodes) {
-                    println "Inserting "+uuid+" : "+method+ " in "+ clone + " after "+ iteration
-                    clone.put(uuid,method)
+                def type = getMethodType(model)
+                def method = getRandomFMethod(type)
+                println "Substituting "+key+ " Type: " + type + " With: " + uuid + " Method: " + method
+
+                //generare un array o un mappa casuale se arg è array o mappa ?
+                if (parent instanceof Map) {
+                    parent.remove("$key")
+                    parent.put(uuid,method)
                 }
-            }
-        }
 
-        return iteration
-    }
-
-    /**
-     * substitutes in a json model nodesToInsert nodes. can work both in depth mode or just the current level
-     * @param json model
-     * @param nodesToInsert nodes to be substituted
-     * @param deep if true removes in depth if false substitutes nodes at current level
-     * @return
-     */
-    public def substituteNodes(String json,int nodesToSubstitute,boolean deep = true){
-        def arg = new JsonSlurper().parseText(json)
-        def clone = new JsonSlurper().parseText(json)
-
-        int countNodes = deep ? countNodesInDepth(arg) : countNodesFlat(arg)
-
-        def nodes = faker.integerList(2,countNodes,nodesToSubstitute)
-        println "Nodes count " + countNodes
-        println "Substitutings Nodes "+nodes
-
-        if (deep) {
-            println "Deep"
-            substituteNodeInDepth(arg, clone, nodes, 0)
-        } else {
-            println "Flat"
-            substituteNodeFlat(arg, clone, nodes, 0)
-        }
-
-        return clone
-    }
-
-    private int substituteNodeInDepth(def arg,def clone, def nodes, int iteration, def key = null,def parent = null){
-        iteration++
-
-        if (iteration in nodes) {
-            def uuid = faker.uuid()
-            def type = getArgType(arg)
-            def method = getFMethod(type)
-            println "Substituting "+key+ " Type: " + type + " With: " + uuid + " Method: " + method
-
-            //generare un array o un mappa casuale se arg è array o mappa ?
-            if (parent instanceof Map) {
-                parent.remove("$key")
-                parent.put(uuid,method)
-            }
-
-            if (parent instanceof List){
-                int index = parent.indexOf(key)
-                if (index >= 0) {
-                    parent.remove(index)
-                    parent.add(method)
-                }
-            }
-        }
-        //array
-        if (arg instanceof List) {
-            arg.each {
-                int index = clone.indexOf(it)
-                iteration = substituteNodeInDepth(it,clone[index], nodes, iteration,it,clone)
-            }
-        }
-
-        //mappe
-        if (arg instanceof Map) {
-            arg.each {itKey,itValue ->
-                iteration = substituteNodeInDepth(itValue, clone."${itKey}", nodes, iteration,itKey,clone)
-            }
-        }
-
-        return iteration
-    }
-
-    private int substituteNodeFlat(def arg,def clone, def nodes, int iteration){
-
-        //array
-        if (arg instanceof List) {
-            arg.each {
-                iteration++
-
-                if (iteration in nodes) {
-                    int index = clone.indexOf(it)
+                if (parent instanceof List){
+                    int index = parent.indexOf(key)
                     if (index >= 0) {
-                        def uuid = faker.uuid()
-                        def type = getArgType(arg)
-                        def method = getFMethod(type)
-                        println "Substituting "+arg+ " Type: " + type + " With: " + uuid + " Method: " + method
-                        clone.remove(index)
-                        clone.add(method)
+                        parent.remove(index)
+                        parent.add(method)
                     }
-
                 }
-            }
+                break;
         }
-
-        //mappe
-        if (arg instanceof Map) {
-            arg.each {itKey,itValue ->
-                iteration++
-
-                if (iteration in nodes) {
-                    def uuid = faker.uuid()
-                    def type = getArgType(itValue)
-                    def method = getFMethod(type)
-                    println "Substituting "+itKey+ " Type: " + type + " With: " + uuid + " Method: " + method
-                    clone.remove("$itKey")
-                    clone.put(uuid,method)
-                }
-            }
-        }
-
-        return iteration
     }
 
-    private int countNodesInDepth(def arg){
+    private int deepCount(def model){
         int nodes = 1
 
-        if (arg instanceof List) {
-            arg.each {
-                nodes += countNodesInDepth(it)
+        if (model instanceof List) {
+            model.each {
+                nodes += deepCount(it)
             }
         }
 
-        if (arg instanceof Map) {
-            arg.each {key,value ->
-                nodes += countNodesInDepth(value)
+        if (model instanceof Map) {
+            model.each {key,value ->
+                nodes += deepCount(value)
             }
         }
 
@@ -355,23 +187,39 @@ class Util {
         return nodes
     }
 
-    private int countNodesFlat(def arg){
+    private int flatCount(def model){
         int nodes = 0
 
-        if (arg instanceof List) {
-            nodes = arg.size()
+        if (model instanceof List) {
+            nodes = model.size()
         }
 
-        if (arg instanceof Map) {
-            nodes = arg.size()
+        if (model instanceof Map) {
+            nodes = model.size()
         }
 
 
         return nodes
     }
 
-    private def getFMethod(String excludedType = null){
-        //if (excludedType) {
+    private def getMethodType(def model){
+        if (model instanceof Map)
+            return "map"
+
+        if (model instanceof List)
+            return "list"
+
+        String regex = '\\$\\{([^}]+)\\}'
+        model = model.replaceAll(regex, '$1')
+        def method = fMethods.findAll({ it.keySet()[0] == model })[0]
+        if (method)
+            return method.values()[0]
+        else
+            return "n.d."
+
+    }
+
+    public def getRandomFMethod(String excludedType = null){
         if ("map".equals(excludedType)) {
             def result =[:]
             def nodes = faker.integer()
@@ -387,42 +235,18 @@ class Util {
             }
             return result
         } else  {
-            def filteredMethods = filterMethods(excludedType)
+            def filteredMethods = excludeMethodsByType(excludedType)
             return "\${"+filteredMethods[faker.integer(1, filteredMethods.size())].keySet()[0]+"}"
         }
-
-        /*
-        if (!"map".equals(excludedType) && !"list".equals(excludedType)) {
-            def filteredMethods = filterMethods(excludedType)
-            return filteredMethods[faker.integer(1, filteredMethods.size())].keySet()[0]
-        }
-        else
-            return fMethods[faker.integer(1,fMethods.size())]?.keySet()[0]
-
-         */
     }
 
-    private def filterMethods(String excludedType){
+    private def excludeMethodsByType(String excludedType){
         if (excludedType)
             return fMethods.findAll({method -> method.values()[0] != excludedType})
-        else return fMethods
+        else
+            return fMethods
     }
 
-    private def getArgType(def arg){
-        /*if (arg instanceof Map || arg instanceof List)
-            return null*/
-
-        if (arg instanceof Map)
-            return "map"
-
-        if (arg instanceof List)
-            return "list"
-
-        def method = fMethods.findAll({it.keySet()[0] == arg})[0]
-        if (method)
-            return method.values()[0]
-        else return null
-    }
 
     private def fMethods = [["streetName":"string"],
             ["streetAddressNumber":"number"],
