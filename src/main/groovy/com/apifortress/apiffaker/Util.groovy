@@ -1,6 +1,5 @@
 package com.apifortress.apiffaker
 
-
 import groovy.json.JsonSlurper
 
 class Util {
@@ -33,12 +32,13 @@ class Util {
      * @return
      */
     public def fillModel(String json){
-        def result
+
         def jsonSlurper = new JsonSlurper().parseText(json)
+        return faker.single(jsonSlurper)
+    }
 
-        result = faker.single(jsonSlurper)
-
-        return result
+    public def fillModel(def obj){
+        return faker.single(obj)
     }
 
     public def manipulateModel(int manipulationMode,String jsonModel,int nodesToManipulate){
