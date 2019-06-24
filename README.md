@@ -20,7 +20,7 @@ This library based on java faker provides several methods to generate fake data
   - **country**(): provides random country
   - **countryCode**(): provides random country code
   - **countryCodeSL**(): provides random country code in small letters
-  - **countryCode3d**(): provides random country code in small letters on 3 digits
+  - **countryCodeSL3d**(): provides random country code in small letters on 3 digits
   - **capital**(): provides random capital city    
   
 ### People and People identity
