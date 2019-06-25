@@ -32,15 +32,18 @@ public class Lorem {
     }
 
     public String characters(int minimumLength, int maximumLength) {
-        return characters(faker.random().nextInt(maximumLength - minimumLength) + minimumLength, false);
+        int numberOfCharacters = minimumLength == maximumLength ? minimumLength : faker.random().nextInt(maximumLength - minimumLength) + minimumLength;
+        return characters(numberOfCharacters, false);
     }
 
     public String characters(int minimumLength, int maximumLength, boolean includeUppercase) {
-        return characters(faker.random().nextInt(maximumLength - minimumLength) + minimumLength, includeUppercase);
+        int numberOfCharacters = minimumLength == maximumLength ? minimumLength : faker.random().nextInt(maximumLength - minimumLength) + minimumLength;
+        return characters(numberOfCharacters, includeUppercase);
     }
 
     public String characters(int minimumLength, int maximumLength, boolean includeUppercase, boolean includeDigit) {
-        return characters(faker.random().nextInt(maximumLength - minimumLength) + minimumLength, includeUppercase, includeDigit);
+        int numberOfCharacters = minimumLength == maximumLength ? minimumLength : faker.random().nextInt(maximumLength - minimumLength) + minimumLength;
+        return characters(numberOfCharacters, includeUppercase, includeDigit);
     }
 
     public String characters(int fixedNumberOfCharacters) {

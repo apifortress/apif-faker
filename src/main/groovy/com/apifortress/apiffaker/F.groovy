@@ -321,8 +321,6 @@ public class F {
      * @return random password
      */
     public String password(int minimumLength = 8, int maximumLength = 16,boolean includeUppercase = false,boolean includeSpecial = false) {
-        if (minimumLength == maximumLength) maximumLength++
-        if (minimumLength > maximumLength) maximumLength = minimumLength + 1
         return faker.internet().password(minimumLength, maximumLength, includeUppercase, includeSpecial)
     }
 
@@ -420,7 +418,6 @@ public class F {
         iterations.times {
             def result = []
             args.each { arg ->
-                //currentarg = arg
                 if(arg instanceof Map || arg instanceof List)
                     result.add(collection(1,arg))
                 else if ("null".equals(arg))
@@ -439,7 +436,6 @@ public class F {
         iterations.times {
             def result = [:]
             args.each { key, value ->
-                //currentarg = value
                 if(value instanceof Map || value instanceof List)
                     result.put(key,collection(1,value))
                 else if ("null".equals(value))
@@ -456,20 +452,15 @@ public class F {
         String regex = '\\$\\{([^}]+)\\}'
         boolean matches = value.matches(regex)
         try {
-            if (templateStyle){
-                if (matches) {
-                    value = value.replaceAll(regex, '$1')
-                    addAsMethod(result,value,key)
-                } else {
-                    addAsValue(result,value,key)
-                }
-
-            } else {
+            if (!templateStyle || templateStyle && matches)
+            {
+                value = value.replaceAll(regex, '$1')
                 addAsMethod(result,value,key)
+            } else {
+                addAsValue(result,value,key)
             }
-
         } catch (MissingMethodException ex) {
-            def response = missingMethoResponse(value)
+            String response = missingMethoResponse(value)
             addAsValue(result,response,key)
         }
     }
@@ -484,10 +475,10 @@ public class F {
 
     private void addAsValue(def result,String value,String key = null) throws MissingMethodException{
         if (result instanceof List)
-            result.add("${value}")
+            result.add(value)
 
         if (result instanceof  Map)
-            result.put(key, "${value}")
+            result.put(key, value)
     }
 
     private String missingMethoResponse(def value) {
