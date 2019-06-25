@@ -42,7 +42,7 @@ This library based on java faker provides several methods to generate fake data
   - **domainWord**(): provides random word
   - **domainSuffix**(): provides random suffix
   - **url**(): provides random url
-  - **password**(<minimumLength,maximumLength,includeUppercase,includeSpecial>): provides random password
+  - **password**(<minimumLength,maximumLength,includeUppercase,includeSpecial,includeDigit>): provides random password
   
 ### Credit Card  
   - **creditCardNumber**(): provides random credit card number

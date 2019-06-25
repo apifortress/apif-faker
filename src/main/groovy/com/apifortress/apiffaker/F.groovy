@@ -320,8 +320,8 @@ public class F {
      * @param includeSpecial
      * @return random password
      */
-    public String password(int minimumLength = 8, int maximumLength = 16,boolean includeUppercase = false,boolean includeSpecial = false) {
-        return faker.internet().password(minimumLength, maximumLength, includeUppercase, includeSpecial)
+    public String password(int minimumLength = 8, int maximumLength = 16,boolean includeUppercase = false,boolean includeSpecial = false,boolean  includeDigit = false) {
+        return faker.internet().password(minimumLength, maximumLength, includeUppercase, includeSpecial, includeDigit)
     }
 
     /**
