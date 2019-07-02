@@ -1,6 +1,7 @@
 package com.apifortress.apiffaker
 
 import com.github.javafaker.Faker
+import com.opencsv.CSVReader
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
@@ -8,18 +9,13 @@ import groovy.json.JsonSlurper
 class Main {
 
     static int RANDOM = 0
-    static int FILL = 1
-    static int REMOVE = 2
-    static int INSERT = 3
-    static int INSERT_FLAT = 4
-    static int SUBSTITUTE = 5
-    static int SUBSTITUTE_FLAT = 6
 
     public static void main(String[] args) {
-        def example = "examples/model2.json"
+        def example = "examples/model9.json"
+        //fillModel(example)
         //def example = "csv/model1.csv"
-        //example = "examples/model1.json"
-        //fillNodes(example)
+        //fillCsv(example)
+
 
         //manipulateModel(Util.MODE_REMOVE,example,3)
         //manipulateModel(Util.MODE_REMOVE_FLAT,example,3)
@@ -30,7 +26,8 @@ class Main {
         //manipulateModel(Util.MODE_SUBSTITUTE,example,3,)
         //manipulateModel(Util.MODE_SUBSTITUTE_FLAT,example,3,)
 
-        stressTest(50,100,INSERT)
+        stressTest(50,100,RANDOM)
+        //stressTest(50,100,Util.MODE_SUBSTITUTE)
         //printRandomThings()
 
         /*F f = new F()
@@ -47,21 +44,22 @@ class Main {
         tests.times {
             iteration++
             println "*** Test number " + iteration
-            int nodes = faker.integer(1, 20)
+            int nodes = faker.integer(1, 3)
             println "***** Nodes " + nodes
             def exampleDesinence = faker.integer(1,9)
             def example = "examples/model"+exampleDesinence+".json"
             println example
-            int m = mode == RANDOM ? faker.integer(FILL,SUBSTITUTE_FLAT) : mode
+            int m = mode == RANDOM ? faker.integer(Util.MODE_FILL,Util.MODE_SUBSTITUTE_FLAT) : mode
 
             switch (m){
-                case FILL :
-                    fillNodes(example); break;
-                case REMOVE :
-                case INSERT :
-                case INSERT_FLAT :
-                case SUBSTITUTE :
-                case SUBSTITUTE_FLAT :
+                case Util.MODE_FILL:
+                    fillModel(example); break;
+                case Util.MODE_REMOVE :
+                case Util.MODE_REMOVE_FLAT :
+                case Util.MODE_INSERT :
+                case Util.MODE_INSERT_FLAT :
+                case Util.MODE_SUBSTITUTE :
+                case Util.MODE_SUBSTITUTE_FLAT :
                     manipulateModel(m,example, nodes); break;
             }
         }
@@ -79,7 +77,7 @@ class Main {
         println f.domainWord()
     }
 
-    private static void fillNodes(String path){
+    private static void fillModel(String path){
         println "fill"
         Util util = new Util()
         File file = new File(path)
@@ -90,6 +88,24 @@ class Main {
         println "Result"
         println JsonOutput.prettyPrint(JsonOutput.toJson(result))
     }
+
+    private static void fillCsv(String path){
+        println "fillCsv"
+        File file = new File(path)
+        def util = new Util();
+        def lines = new CSVReader(new StringReader(file.getText())).readAll()
+        def result = new StringBuilder()
+
+        lines.each {line ->
+            result.append(util.fillModel((List) line).join(", "))
+        }
+
+        println file.getText()
+
+        println "Result"
+        println result //JsonOutput.prettyPrint(JsonOutput.toJson(result))
+    }
+
 
 
     private static void  manipulateModel(int mode,String path,int nodesToRemove,boolean deep = true){

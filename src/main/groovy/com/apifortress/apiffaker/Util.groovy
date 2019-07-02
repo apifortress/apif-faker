@@ -45,7 +45,6 @@ class Util {
     public def manipulateModel(int manipulationMode,String jsonModel,int nodesToManipulate){
         def model = new JsonSlurper().parseText(jsonModel)
         def clone = new JsonSlurper().parseText(jsonModel)
-
         manipulationCounter = 1
 
         switch (manipulationMode){
@@ -54,7 +53,6 @@ class Util {
             case MODE_SUBSTITUTE:
                 int modelNodes = deepCount(model)
                 def nodes = faker.integerList(2,modelNodes,nodesToManipulate)
-                //nodes = [2,3,4]
                 println "Mode: " + modes[manipulationMode-1]+" Model Nodes: " + modelNodes + " to manipulate: "+nodes
                 deepManipulation(manipulationMode,model,clone,nodes,0); break;
             case MODE_REMOVE_FLAT:
@@ -62,7 +60,6 @@ class Util {
             case MODE_SUBSTITUTE_FLAT:
                 int modelNodes = flatCount(model)
                 def nodes = faker.integerList(2,modelNodes,nodesToManipulate)
-                //nodes = [1, 4, 6, 7]
                 println "Mode: " + modes[manipulationMode-1]+" Model Nodes: " + modelNodes + " to manipulate: "+nodes
                 flatManipulation(manipulationMode,model,clone,nodes); break;
         }
@@ -119,68 +116,77 @@ class Util {
         return iteration
     }
 
-    public def manipulateNode(int manipulationMode, def model,def key, def parent,int iteration) {
+    public void manipulateNode(int manipulationMode, def model,def key, def parent,int iteration) {
         switch (manipulationMode){
             case MODE_REMOVE:
             case MODE_REMOVE_FLAT:
                 println "Removing "+key+ " from "+ parent
-                if (parent instanceof Map)
-                    parent.remove("$key")
-
-                if (parent instanceof List){
-                    int index = parent.indexOf(key)
-                    if (index >= 0) {
-                        parent.remove(index)
-                    }
-                }
+                mapRemove(parent, key)
+                listRemove(parent, key)
                 break;
             case MODE_INSERT:
             case MODE_INSERT_FLAT:
-                def method
-                def name
-                (name,method) = getRandomFMethod()
-
-                if (parent instanceof Map) {
-                    println "Inserting " + name +" : "+method+ " in "+ parent
-                    parent.put(name, method)
-                }
-
-                if (parent instanceof List){
-                    manipulationCounter--
-                    println "Inserting "+ method+ " in "+ parent
-                    int index = parent.indexOf(key)
-                    if (index >= 0)
-                        parent.add(method)
-                }
+                def (name,method) = newNode()
+                println "Inserting " + name + " : " + method + " in " + parent
+                mapInsert(parent, name, method)
+                listInsert(parent, key, name, method)
                 break;
             case MODE_SUBSTITUTE:
             case MODE_SUBSTITUTE_FLAT:
                 def type = getMethodType(model)
-                def method
-                def name
-                (name,method) = getRandomFMethod(type)
-
-                //generare un array o un mappa casuale se arg è array o mappa ?
-                if (parent instanceof Map) {
-                    println "Substituting "+key+ " Type: " + type + " With: " + name + " : " + method
-                    parent.remove("$key")
-                    parent.put(name,method)
-                }
-
-                if (parent instanceof List){
-                    manipulationCounter--
-                    println "Substituting "+key+ " Type: " + type + " With: " + method
-                    int index = parent.indexOf(key)
-                    if (index >= 0) {
-                        parent.remove(index)
-                        parent.add(method)
-                    }
-                }
+                def (name,method) = newNode(type)
+                println "Substituting " + key + " Type: " + type + " With: " + name + " : " + method
+                mapSubstitute(parent, key, type, name, method)
+                listSubstitute(parent, key, type, name, method)
                 break;
         }
     }
 
-    private int deepCount(def model){
+    private void mapSubstitute(def parent, key, String type, def name, def method) {
+        if (parent instanceof Map) {
+            mapRemove(parent,key)
+            mapInsert(parent,name,method)
+        }
+    }
+
+    private void listSubstitute(def parent, key, String type, def name, def method) {
+        if (parent instanceof List){
+            manipulationCounter--
+            listInsert(parent,key,name,method)
+            listRemove(parent,key)
+        }
+    }
+
+    private void mapInsert(def parent, def name, def method) {
+        if (parent instanceof Map) {
+            parent.put(name, method)
+        }
+    }
+
+    private void listInsert(def parent, def key, def name, def method) {
+        if (parent instanceof List){
+            manipulationCounter--
+            int index = parent.indexOf(key)
+            if (index >= 0)
+                parent.add(method)
+        }
+    }
+
+    private void mapRemove(def parent, def key) {
+        if (parent instanceof Map)
+            parent.remove("$key")
+    }
+
+    private void listRemove(def parent, def key) {
+        if (parent instanceof List){
+            int index = parent.indexOf(key)
+            if (index >= 0) {
+                parent.remove(index)
+            }
+        }
+    }
+
+    public int deepCount(def model){
         int nodes = 1
 
         if (model instanceof List) {
@@ -199,7 +205,7 @@ class Util {
         return nodes
     }
 
-    private int flatCount(def model){
+    public int flatCount(def model){
         int nodes = 0
 
         if (model instanceof List) {
@@ -231,28 +237,27 @@ class Util {
 
     }
 
-    public def getRandomFMethod(String excludedType = null){
-        def method
-        def pretty
+    public def newNode(String excludedType = null){
+
         if ("map".equals(excludedType)) {
             def result =[:]
-            def nodes = faker.integer()
+            def nodes = faker.integer(1,10)
             nodes.times {
-                (method,pretty) = getPrettyMethod(fMethods)
+                def(method,pretty) = randomNode(fMethods)
                 result.put(method+"_"+"${1+manipulationCounter++}",pretty)
             }
             return ["map_"+"${manipulationCounter++ - nodes}",result]
         } else if ("list".equals(excludedType)) {
             def result = []
-            def nodes = faker.integer()
+            def nodes = faker.integer(1,10)
             nodes.times {
-                (method,pretty) = getPrettyMethod(fMethods)
+                def(method,pretty) = randomNode(fMethods)
                 result.add(pretty)
             }
             return ["list_"+"${manipulationCounter++}",result]
         } else  {
             def filteredMethods = excludeMethodsByType(excludedType)
-            (method,pretty) = getPrettyMethod(filteredMethods)
+            def(method,pretty) = randomNode(filteredMethods)
             return [method+"_"+"${manipulationCounter++}",pretty]
         }
     }
@@ -265,10 +270,14 @@ class Util {
     }
 
 
-    private def getPrettyMethod(def methods){
-        def method = methods[faker.integer(1,methods.size())]?.keySet()[0]
+    private def randomNode(def methods){
+        def method = methods[randomMethod(methods)]?.keySet()[0]
         def pretty = "\${"+method+"}"
         return [method,pretty]
+    }
+
+    private def randomMethod(def methods){
+        return faker.integer(1,methods.size())
     }
 
     private def fMethods = [["streetName":"string"],
