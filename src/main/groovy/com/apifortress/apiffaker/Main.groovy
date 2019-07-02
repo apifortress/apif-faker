@@ -16,7 +16,7 @@ class Main {
     static int SUBSTITUTE_FLAT = 6
 
     public static void main(String[] args) {
-        def example = "examples/model1.json"
+        def example = "examples/model2.json"
         //def example = "csv/model1.csv"
         //example = "examples/model1.json"
         //fillNodes(example)
@@ -30,7 +30,7 @@ class Main {
         //manipulateModel(Util.MODE_SUBSTITUTE,example,3,)
         //manipulateModel(Util.MODE_SUBSTITUTE_FLAT,example,3,)
 
-        stressTest(500,5500,RANDOM)
+        stressTest(50,100,INSERT)
         //printRandomThings()
 
         /*F f = new F()

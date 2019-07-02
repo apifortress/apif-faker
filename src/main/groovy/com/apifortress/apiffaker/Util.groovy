@@ -54,6 +54,7 @@ class Util {
             case MODE_SUBSTITUTE:
                 int modelNodes = deepCount(model)
                 def nodes = faker.integerList(2,modelNodes,nodesToManipulate)
+                //nodes = [2,3,4]
                 println "Mode: " + modes[manipulationMode-1]+" Model Nodes: " + modelNodes + " to manipulate: "+nodes
                 deepManipulation(manipulationMode,model,clone,nodes,0); break;
             case MODE_REMOVE_FLAT:
@@ -61,7 +62,7 @@ class Util {
             case MODE_SUBSTITUTE_FLAT:
                 int modelNodes = flatCount(model)
                 def nodes = faker.integerList(2,modelNodes,nodesToManipulate)
-                nodes = [1, 4, 6, 7]
+                //nodes = [1, 4, 6, 7]
                 println "Mode: " + modes[manipulationMode-1]+" Model Nodes: " + modelNodes + " to manipulate: "+nodes
                 flatManipulation(manipulationMode,model,clone,nodes); break;
         }
@@ -145,6 +146,7 @@ class Util {
                 }
 
                 if (parent instanceof List){
+                    manipulationCounter--
                     println "Inserting "+ method+ " in "+ parent
                     int index = parent.indexOf(key)
                     if (index >= 0)
@@ -166,6 +168,7 @@ class Util {
                 }
 
                 if (parent instanceof List){
+                    manipulationCounter--
                     println "Substituting "+key+ " Type: " + type + " With: " + method
                     int index = parent.indexOf(key)
                     if (index >= 0) {
