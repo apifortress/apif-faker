@@ -1,30 +1,47 @@
 package com.apifortress.apiffaker
 
+import com.github.javafaker.Faker
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
 
 class Main {
 
+    static int RANDOM = 0
+    static int FILL = 1
+    static int REMOVE = 2
+    static int INSERT = 3
+    static int INSERT_FLAT = 4
+    static int SUBSTITUTE = 5
+    static int SUBSTITUTE_FLAT = 6
+
     public static void main(String[] args) {
         def example = "examples/model1.json"
+        //def example = "csv/model1.csv"
+        //example = "examples/model1.json"
+        //fillNodes(example)
 
         //manipulateModel(Util.MODE_REMOVE,example,3)
         //manipulateModel(Util.MODE_REMOVE_FLAT,example,3)
 
-        //manipulateModel(Util.MODE_INSERT,example,3,)
-        //manipulateModel(Util.MODE_INSERT_FLAT,example,3,)
+        //manipulateModel(Util.MODE_INSERT,example,3)
+        //manipulateModel(Util.MODE_INSERT_FLAT,example,3)
 
         //manipulateModel(Util.MODE_SUBSTITUTE,example,3,)
         //manipulateModel(Util.MODE_SUBSTITUTE_FLAT,example,3,)
 
-        stressTest(5,10,4)
+        stressTest(500,5500,RANDOM)
         //printRandomThings()
+
+        /*F f = new F()
+        println f.password(11,11,true,true,true)*/
+        //Faker faker = new Faker()
+        //println faker.internet().password(false)
     }
 
-    static void stressTest(int i,int j,int m = 0) {
+    static void stressTest(int from,int to,int mode = 0) {
         F faker = new F()
-        int tests = faker.integer(i,j)
+        int tests = faker.integer(from,to)
         int iteration = 0
         println "Tests " + tests
         tests.times {
@@ -35,13 +52,17 @@ class Main {
             def exampleDesinence = faker.integer(1,9)
             def example = "examples/model"+exampleDesinence+".json"
             println example
-            m = m == 0 ? faker.integer(1,4) : m
+            int m = mode == RANDOM ? faker.integer(FILL,SUBSTITUTE_FLAT) : mode
 
             switch (m){
-                case 1 : fillNodes(example); break;
-                case 2 : manipulateModel(Util.MODE_REMOVE,example,nodes); break;
-                case 3 : manipulateModel(Util.MODE_INSERT,example,nodes); break;
-                case 4 : manipulateModel(Util.MODE_SUBSTITUTE,example, nodes); break;
+                case FILL :
+                    fillNodes(example); break;
+                case REMOVE :
+                case INSERT :
+                case INSERT_FLAT :
+                case SUBSTITUTE :
+                case SUBSTITUTE_FLAT :
+                    manipulateModel(m,example, nodes); break;
             }
         }
     }
@@ -69,6 +90,7 @@ class Main {
         println "Result"
         println JsonOutput.prettyPrint(JsonOutput.toJson(result))
     }
+
 
     private static void  manipulateModel(int mode,String path,int nodesToRemove,boolean deep = true){
         println "MANIPULATE"

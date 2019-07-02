@@ -11,6 +11,7 @@
   "phone": "${phone}",
   "mobile": "${mobile}",
   "null": "null",
+  "ciccio": "pasticcio",
   "address": {
     "city": "${cityName}",
     "street": "${streetName}",

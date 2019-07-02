@@ -14,6 +14,7 @@ class Util {
     static final int MODE_SUBSTITUTE_FLAT = 7
 
     private static final modes=["Fill","Deep Remove","Deep Insert","Deep Substitute","Flat Remove","Flat Insert","Flat Substitute"]
+    private int manipulationCounter = 0
 
     F faker
     public Util(String loc = null) {
@@ -45,6 +46,8 @@ class Util {
         def model = new JsonSlurper().parseText(jsonModel)
         def clone = new JsonSlurper().parseText(jsonModel)
 
+        manipulationCounter = 1
+
         switch (manipulationMode){
             case MODE_REMOVE:
             case MODE_INSERT:
@@ -58,6 +61,7 @@ class Util {
             case MODE_SUBSTITUTE_FLAT:
                 int modelNodes = flatCount(model)
                 def nodes = faker.integerList(2,modelNodes,nodesToManipulate)
+                nodes = [1, 4, 6, 7]
                 println "Mode: " + modes[manipulationMode-1]+" Model Nodes: " + modelNodes + " to manipulate: "+nodes
                 flatManipulation(manipulationMode,model,clone,nodes); break;
         }
@@ -131,14 +135,17 @@ class Util {
                 break;
             case MODE_INSERT:
             case MODE_INSERT_FLAT:
-                def uuid = faker.uuid()
-                def method = getRandomFMethod()
-                println "Inserting "+uuid+" : "+method+ " in "+ parent + " after "+ iteration
+                def method
+                def name
+                (name,method) = getRandomFMethod()
 
-                if (parent instanceof Map)
-                    parent.put(uuid,method)
+                if (parent instanceof Map) {
+                    println "Inserting " + name +" : "+method+ " in "+ parent
+                    parent.put(name, method)
+                }
 
                 if (parent instanceof List){
+                    println "Inserting "+ method+ " in "+ parent
                     int index = parent.indexOf(key)
                     if (index >= 0)
                         parent.add(method)
@@ -146,18 +153,20 @@ class Util {
                 break;
             case MODE_SUBSTITUTE:
             case MODE_SUBSTITUTE_FLAT:
-                def uuid = faker.uuid()
                 def type = getMethodType(model)
-                def method = getRandomFMethod(type)
-                println "Substituting "+key+ " Type: " + type + " With: " + uuid + " Method: " + method
+                def method
+                def name
+                (name,method) = getRandomFMethod(type)
 
                 //generare un array o un mappa casuale se arg è array o mappa ?
                 if (parent instanceof Map) {
+                    println "Substituting "+key+ " Type: " + type + " With: " + name + " : " + method
                     parent.remove("$key")
-                    parent.put(uuid,method)
+                    parent.put(name,method)
                 }
 
                 if (parent instanceof List){
+                    println "Substituting "+key+ " Type: " + type + " With: " + method
                     int index = parent.indexOf(key)
                     if (index >= 0) {
                         parent.remove(index)
@@ -220,23 +229,28 @@ class Util {
     }
 
     public def getRandomFMethod(String excludedType = null){
+        def method
+        def pretty
         if ("map".equals(excludedType)) {
             def result =[:]
             def nodes = faker.integer()
             nodes.times {
-                result.put(faker.uuid(),"\${"+fMethods[faker.integer(1,fMethods.size())]?.keySet()[0]+"}")
+                (method,pretty) = getPrettyMethod(fMethods)
+                result.put(method+"_"+"${1+manipulationCounter++}",pretty)
             }
-            return result
+            return ["map_"+"${manipulationCounter++ - nodes}",result]
         } else if ("list".equals(excludedType)) {
             def result = []
             def nodes = faker.integer()
             nodes.times {
-                result.add("\${"+fMethods[faker.integer(1, fMethods.size())]?.keySet()[0]+"}")
+                (method,pretty) = getPrettyMethod(fMethods)
+                result.add(pretty)
             }
-            return result
+            return ["list_"+"${manipulationCounter++}",result]
         } else  {
             def filteredMethods = excludeMethodsByType(excludedType)
-            return "\${"+filteredMethods[faker.integer(1, filteredMethods.size())].keySet()[0]+"}"
+            (method,pretty) = getPrettyMethod(filteredMethods)
+            return [method+"_"+"${manipulationCounter++}",pretty]
         }
     }
 
@@ -247,6 +261,12 @@ class Util {
             return fMethods
     }
 
+
+    private def getPrettyMethod(def methods){
+        def method = methods[faker.integer(1,methods.size())]?.keySet()[0]
+        def pretty = "\${"+method+"}"
+        return [method,pretty]
+    }
 
     private def fMethods = [["streetName":"string"],
             ["streetAddressNumber":"number"],
