@@ -44,7 +44,7 @@ public class Company {
 
     /**
      * Generate a buzzword-laden catch phrase.
-     * @return return
+     * @return
      */
     public String catchPhrase() {
         @SuppressWarnings("unchecked")
@@ -54,6 +54,7 @@ public class Company {
 
     /**
      * When a straight answer won't do, BS to the rescue!
+     * @return
      */
     public String bs() {
         @SuppressWarnings("unchecked")
