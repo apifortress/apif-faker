@@ -30,6 +30,23 @@
             <timezone>UTC+01:00</timezone>
         </developer>
     </developers>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <scm>
+        <connection>scm:git:git://github.com/apifortress/apif-faker</connection>
+        <developerConnection>scm:git:git@github.com:apifortress/apif-faker.git</developerConnection>
+        <url>https://github.com/apifortress/apif-faker</url>
+        <tag>apif-faker-1.0.0</tag>
+    </scm>
 
 
     <dependencies>
@@ -199,24 +216,6 @@
             </plugin>
         </plugins>
 	</build>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-
-    <scm>
-        <connection>scm:git:git://github.com/apifortress/apif-faker</connection>
-        <developerConnection>scm:git:git@github.com:apifortress/apif-faker.git</developerConnection>
-        <url>https://github.com/apifortress/apif-faker</url>
-        <tag>apif-faker-1.0.0</tag>
-    </scm>
 
     <profiles>
         <!-- GPG Signature on release -->
