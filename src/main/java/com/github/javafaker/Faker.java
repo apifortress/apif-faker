@@ -227,7 +227,7 @@ public class Faker {
      * characters.
      * For example, the string "12??34" could be replaced with a string like "12AB34".
      *
-     * @param letterString
+     * @param letterString letterString
      * @return letter
      */
     public String letterify(String letterString) {
@@ -239,8 +239,8 @@ public class Faker {
      * characters.
      * For example, the string "12??34" could be replaced with a string like "12AB34".
      *
-     * @param letterString
-     * @param isUpper
+     * @param letterString letterString
+     * @param isUpper isUpper
      * @return legger
      */
     public String letterify(String letterString, boolean isUpper) {
@@ -251,7 +251,7 @@ public class Faker {
      * Applies both a {@link #numerify(String)} and a {@link #letterify(String)}
      * over the incoming string.
      *
-     * @param string
+     * @param string string
      * @return both
      */
     public String bothify(String string) {
@@ -262,8 +262,8 @@ public class Faker {
      * Applies both a {@link #numerify(String)} and a {@link #letterify(String)}
      * over the incoming string.
      *
-     * @param string
-     * @param isUpper
+     * @param string string
+     * @param isUpper isUpper
      * @return both
      */
     public String bothify(String string, boolean isUpper) {
@@ -272,6 +272,7 @@ public class Faker {
 
     /**
      * Generates a String that matches the given regular expression.
+     * @return regex
      */
     public String regexify(String regex) {
         return fakeValuesService.regexify(regex);
