@@ -215,7 +215,7 @@ public class Faker {
      * Returns a string with the '#' characters in the parameter replaced with random digits between 0-9 inclusive.
      * For example, the string "ABC##EFG" could be replaced with a string like "ABC99EFG".
      *
-     * @param numberString
+     * @param numberString numberString
      * @return number
      */
     public String numerify(String numberString) {
@@ -272,6 +272,7 @@ public class Faker {
 
     /**
      * Generates a String that matches the given regular expression.
+     * @param regex regex
      * @return regex
      */
     public String regexify(String regex) {

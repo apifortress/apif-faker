@@ -24,6 +24,7 @@ public class Options {
      * Returns a random element from Enum.
      *
      * @param enumeration The Enum to take a random element from.
+     * @param <E>   The type of the elements in the varargs.
      * @return A randomly selected element from the enum.
      * @return option
      */

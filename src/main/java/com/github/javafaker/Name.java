@@ -7,7 +7,8 @@ public class Name {
     private final Faker faker;
 
     /**
-     * Internal constructor, not to be used by clients.  Instances of {@link Name} should be accessed via 
+     * Internal constructor, not to be used by clients.  Instances of {@link Name} should be accessed via
+     * @param faker faker
      * {@link Faker#name()}.
      */
     protected Name(Faker faker) {

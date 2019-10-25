@@ -82,8 +82,8 @@ public class FakeValuesService {
     /**
      * Convert the specified locale into a chain of locales used for message resolution. For example:
      * <p>
-     * {@link Locale#FRANCE} (fr_FR) -> [ fr_FR, anotherTest, en ]
-     *
+     * {@link Locale#FRANCE} (fr_FR) [ fr_FR, anotherTest, en ]
+     * @param from from
      * @return a list of {@link Locale} instances
      */
     protected List<Locale> localeChain(Locale from) {
@@ -120,7 +120,7 @@ public class FakeValuesService {
     /**
      * Fetch a random value from an array item specified by the key
      *
-     * @param key
+     * @param key key
      * @return return
      */
     public Object fetch(String key) {
@@ -131,7 +131,7 @@ public class FakeValuesService {
     /**
      * Same as {@link #fetch(String)} except this casts the result into a String.
      *
-     * @param key
+     * @param key key
      * @return return
      */
     public String fetchString(String key) {
@@ -203,10 +203,10 @@ public class FakeValuesService {
 
     /**
      * Returns a string with the '#' characters in the parameter replaced with random digits between 0-9 inclusive.
-     * <p/>
+     *
      * For example, the string "ABC##EFG" could be replaced with a string like "ABC99EFG".
      *
-     * @param numberString
+     * @param numberString numberString
      * @return return
      */
     public String numerify(String numberString) {
@@ -226,7 +226,7 @@ public class FakeValuesService {
      * Applies both a {@link #numerify(String)} and a {@link #letterify(String)}
      * over the incoming string.
      *
-     * @param string
+     * @param string string
      * @return return
      */
     public String bothify(String string) {
@@ -237,8 +237,8 @@ public class FakeValuesService {
      * Applies both a {@link #numerify(String)} and a {@link #letterify(String, boolean)}
      * over the incoming string.
      *
-     * @param string
-     * @param isUpper
+     * @param string string
+     * @param isUpper isUpper
      * @return return
      */
     public String bothify(String string, boolean isUpper) {
@@ -247,6 +247,8 @@ public class FakeValuesService {
 
     /**
      * Generates a String that matches the given regular expression.
+     * @param regex regex
+     * @return regex
      */
     public String regexify(String regex) {
         Generex generex = new Generex(regex);
@@ -257,10 +259,9 @@ public class FakeValuesService {
     /**
      * Returns a string with the '?' characters in the parameter replaced with random alphabetic
      * characters.
-     * <p/>
      * For example, the string "12??34" could be replaced with a string like "12AB34".
      *
-     * @param letterString
+     * @param letterString letterSTring
      * @return return
      */
     public String letterify(String letterString) {
@@ -270,10 +271,10 @@ public class FakeValuesService {
     /**
      * Returns a string with the '?' characters in the parameter replaced with random alphabetic
      * characters.
-     * <p/>
+     *
      * For example, the string "12??34" could be replaced with a string like "12AB34".
      *
-     * @param letterString
+     * @param letterString letterString
      * @param isUpper      specifies whether or not letters should be upper case
      * @return return
      */
@@ -296,10 +297,14 @@ public class FakeValuesService {
 
     /**
      * Resolves a key to a method on an object.
-     * <p>
+     *
      * #{hello} with result in a method call to current.hello();
-     * <p>
+     *
      * #{Person.hello_someone} will result in a method call to person.helloSomeone();
+     * @param current current
+     * @param key lkey
+     * @param root root
+     * @return resolved
      */
     public String resolve(String key, Object current, Faker root) {
         final String expression = safeFetch(key, null);
@@ -314,8 +319,8 @@ public class FakeValuesService {
     /**
      * resolves an expression using the current faker.
      *
-     * @param expression
-     * @param faker
+     * @param expression expression
+     * @param faker faker
      * @return return
      */
     public String expression(String expression, Faker faker) {
@@ -323,22 +328,25 @@ public class FakeValuesService {
     }
 
     /**
-     * <p>processes a expression in the style #{X.y} using the current objects as the 'current' location
+     * processes a expression in the style #{X.y} using the current objects as the 'current' location
      * within the yml file (or the {@link Faker} object hierarchy as it were).
-     * </p>
-     * <p>
+     *
+     *
      * #{Address.streetName} would get resolved to {@link Faker#address()}'s {@link Address#streetName()}
-     * </p>
-     * <p>
+     *
+     *
      * #{address.street} would get resolved to the YAML > locale: faker: address: street:
-     * </p>
-     * <p>
+     *
+     *
      * Combinations are supported as well: "#{x} #{y}"
-     * </p>
-     * <p>
+     *
+     *
      * Recursive templates are supported.  if "#{x}" resolves to "#{Address.streetName}" then "#{x}" resolves to
      * {@link Faker#address()}'s {@link Address#streetName()}.
-     * </p>
+     * @param expression expression
+     * @param current current
+     * @param root root
+     * @return return
      */
     protected String resolveExpression(String expression, Object current, Faker root) {
         final Matcher matcher = EXPRESSION_PATTERN.matcher(expression);
@@ -365,14 +373,16 @@ public class FakeValuesService {
     }
 
     /**
-     * <h1>Search Order</h1>
-     * <ul>
-     * <li>Search for methods on the current object</li>
-     * <li>local keys in Yaml File</li>
-     * <li>Search for methods on faker child objects</li>
-     * <li>Search for keys in yaml file by transforming object reference to yaml reference</li>
-     * </ul>
+     * Search Order
      *
+     * Search for methods on the current object
+     * local keys in Yaml File
+     * search for methods on faker child objects
+     * Search for keys in yaml file by transforming object reference to yaml reference
+     * @param current current
+     * @param args args
+     * @param directive directive
+     * @param root root
      * @return null if unable to resolve
      */
     private String resolveExpression(String directive, List<String> args, Object current, Faker root) {
@@ -442,6 +452,7 @@ public class FakeValuesService {
     }
 
     /**
+     * @param current current
      * @return a yaml style name from the classname of the supplied object (PhoneNumber => phone_number)
      */
     private String classNameToYamlName(Object current) {
@@ -449,6 +460,7 @@ public class FakeValuesService {
     }
 
     /**
+     * @param expression expression
      * @return a yaml style name like 'phone_number' from a java style name like 'PhoneNumber'
      */
     private String javaNameToYamlName(String expression) {
@@ -457,12 +469,6 @@ public class FakeValuesService {
                 .toLowerCase();
     }
 
-
-    /**
-     * Given a directive like 'firstName', attempts to resolve it to a method.  For example if obj is an instance of
-     * {@link Name} then this method would return {@link Name#firstName()}.  Returns null if the directive is nested
-     * (i.e. has a '.') or the method doesn't exist on the <em>obj</em> object.
-     */
     private String resolveFromMethodOn(Object obj, String directive, List<String> args) {
         if (obj == null) {
             return null;
@@ -478,12 +484,6 @@ public class FakeValuesService {
         }
     }
 
-    /**
-     * Accepts a {@link Faker} instance and a name.firstName style 'key' which is resolved to the return value of:
-     * {@link Faker#name()}'s {@link Name#firstName()} method.
-     *
-     * @throws RuntimeException if there's a problem invoking the method or it doesn't exist.
-     */
     private String resolveFakerObjectAndMethod(Faker faker, String key, List<String> args) {
         final String[] classAndMethod = key.split("\\.", 2);
 
@@ -510,10 +510,6 @@ public class FakeValuesService {
         }
     }
 
-
-    /**
-     * Find an accessor by name ignoring case.
-     */
     private MethodAndCoercedArgs accessor(Object onObject, String name, List<String> args) {
         log.log(Level.FINE, "Find accessor named " + name + " on " + onObject.getClass().getSimpleName() + " with args " + args);
 
@@ -536,7 +532,8 @@ public class FakeValuesService {
     /**
      * Coerce arguments in <em>args</em> into the appropriate types (if possible) for the parameter arguments
      * to <em>accessor</em>.
-     *
+     * @param args args
+     * @param accessor  accessor
      * @return array of coerced values if successful, null otherwise
      * @throws Exception if unable to coerce
      */
@@ -568,7 +565,7 @@ public class FakeValuesService {
         return (obj == null) ? null : obj.toString();
     }
 
-    /**
+    /*
      * simple wrapper class around an accessor and a list of coerced arguments.
      * this is useful as we get to find the method and coerce the arguments in one
      * shot, returning both when successful.  This saves us from doing it more than once (coercing args).
