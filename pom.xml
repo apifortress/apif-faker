@@ -3,7 +3,7 @@
     <groupId>com.apifortress</groupId>
     <artifactId>apif-faker</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Apif Faker</name>
 
     <description>Apif Faker</description>
