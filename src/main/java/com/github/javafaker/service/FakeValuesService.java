@@ -121,7 +121,7 @@ public class FakeValuesService {
      * Fetch a random value from an array item specified by the key
      *
      * @param key
-     * @return
+     * @return return
      */
     public Object fetch(String key) {
         List<Object> valuesArray = (List) fetchObject(key);
@@ -132,7 +132,7 @@ public class FakeValuesService {
      * Same as {@link #fetch(String)} except this casts the result into a String.
      *
      * @param key
-     * @return
+     * @return return
      */
     public String fetchString(String key) {
         return (String) fetch(key);
@@ -176,7 +176,7 @@ public class FakeValuesService {
      *
      * @param key key contains path to an object. Path segment is separated by
      *            dot. E.g. name.first_name
-     * @return
+     * @return return
      */
     @SuppressWarnings("unchecked")
     public Object fetchObject(String key) {
@@ -207,7 +207,7 @@ public class FakeValuesService {
      * For example, the string "ABC##EFG" could be replaced with a string like "ABC99EFG".
      *
      * @param numberString
-     * @return
+     * @return return
      */
     public String numerify(String numberString) {
         StringBuilder sb = new StringBuilder();
@@ -227,7 +227,7 @@ public class FakeValuesService {
      * over the incoming string.
      *
      * @param string
-     * @return
+     * @return return
      */
     public String bothify(String string) {
         return letterify(numerify(string));
@@ -239,7 +239,7 @@ public class FakeValuesService {
      *
      * @param string
      * @param isUpper
-     * @return
+     * @return return
      */
     public String bothify(String string, boolean isUpper) {
         return letterify(numerify(string), isUpper);
@@ -261,7 +261,7 @@ public class FakeValuesService {
      * For example, the string "12??34" could be replaced with a string like "12AB34".
      *
      * @param letterString
-     * @return
+     * @return return
      */
     public String letterify(String letterString) {
         return this.letterify(letterString, false);
@@ -275,7 +275,7 @@ public class FakeValuesService {
      *
      * @param letterString
      * @param isUpper      specifies whether or not letters should be upper case
-     * @return
+     * @return return
      */
     public String letterify(String letterString, boolean isUpper) {
         return letterHelper((isUpper) ? 65 : 97, letterString); // from ascii table
@@ -316,7 +316,7 @@ public class FakeValuesService {
      *
      * @param expression
      * @param faker
-     * @return
+     * @return return
      */
     public String expression(String expression, Faker faker) {
         return resolveExpression(expression, null, faker);
