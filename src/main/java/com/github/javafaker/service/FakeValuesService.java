@@ -32,25 +32,24 @@ public class FakeValuesService {
     private final RandomService randomService;
 
     /**
-     * <p>
+     *
      * Resolves YAML file using the most specific path first based on language and country code.
      * 'en_US' would resolve in the following order:
-     * <ol>
-     * <li>/en-US.yml</li>
-     * <li>/en.yml</li>
-     * </ol>
+     *
+     * /en-US.yml
+     * /en.yml
+     *
      * The search is case-insensitive, so the following will all resolve correctly.  Also, either a hyphen or
      * an underscore can be used when constructing a {@link Locale} instance.  This is legacy behavior and not
      * condoned, but it will work.
-     * <ul>
-     * <li>EN_US</li>
-     * <li>En-Us</li>
-     * <li>eN_uS</li>
-     * </ul>
-     * </p>
      *
-     * @param locale
-     * @param randomService
+     * EN_US
+     * En-Us
+     * eN_uS
+     *
+     *
+     * @param locale locale
+     * @param randomService randomservice
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public FakeValuesService(Locale locale, RandomService randomService) {
@@ -335,7 +334,7 @@ public class FakeValuesService {
      * #{Address.streetName} would get resolved to {@link Faker#address()}'s {@link Address#streetName()}
      *
      *
-     * #{address.street} would get resolved to the YAML > locale: faker: address: street:
+     * #{address.street} would get resolved to the YAML  locale: faker: address: street:
      *
      *
      * Combinations are supported as well: "#{x} #{y}"
