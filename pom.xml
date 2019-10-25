@@ -3,7 +3,7 @@
     <groupId>com.apifortress</groupId>
     <artifactId>apif-faker</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.0.5</version>
     <name>Apif Faker</name>
 
     <description>Apif Faker</description>
@@ -45,7 +45,7 @@
         <connection>scm:git:git://github.com/apifortress/apif-faker</connection>
         <developerConnection>scm:git:git@github.com:apifortress/apif-faker.git</developerConnection>
         <url>https://github.com/apifortress/apif-faker</url>
-        <tag>apif-faker-1.0.0</tag>
+        <tag>apif-faker-1.0.5</tag>
     </scm>
 
 
