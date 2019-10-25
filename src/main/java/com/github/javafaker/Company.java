@@ -64,6 +64,7 @@ public class Company {
 
     /**
      * Generate a random company logo url in PNG format.
+     * @return logo
      */
     public String logo() {
         int number = faker.random().nextInt(13) + 1;

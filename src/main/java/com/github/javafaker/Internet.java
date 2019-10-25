@@ -162,7 +162,8 @@ public class Internet {
     }
 
     /**
-     * @see Internet#macAddress(String) 
+     * @see Internet#macAddress(String)
+     * @return macaddress
      */
     public String macAddress() {
         return macAddress("");

@@ -25,6 +25,7 @@ public class Options {
      *
      * @param enumeration The Enum to take a random element from.
      * @return A randomly selected element from the enum.
+     * @return option
      */
     public <E extends Enum<E>> E option(Class<E> enumeration) {
         E[] enumConstants = enumeration.getEnumConstants();

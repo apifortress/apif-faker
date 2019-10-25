@@ -25,6 +25,7 @@ public class IdNumber {
 
     /**
      * Specified as #{IDNumber.valid_sv_se_ssn} in sv-SE.yml
+     * @return ssn
      */
     public String validSvSeSsn() {
         SvSEIdNumber svSEIdNumber = new SvSEIdNumber();
@@ -33,6 +34,7 @@ public class IdNumber {
 
     /**
      * Specified as #{IDNumber.invalid_sv_se_ssn} in sv-SE.yml
+     * @return ssn
      */
     public String invalidSvSeSsn() {
         SvSEIdNumber svSEIdNumber = new SvSEIdNumber();

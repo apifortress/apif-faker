@@ -213,11 +213,10 @@ public class Faker {
 
     /**
      * Returns a string with the '#' characters in the parameter replaced with random digits between 0-9 inclusive.
-     * <p>
      * For example, the string "ABC##EFG" could be replaced with a string like "ABC99EFG".
      *
      * @param numberString
-     * @return
+     * @return number
      */
     public String numerify(String numberString) {
         return fakeValuesService.numerify(numberString);
@@ -226,11 +225,10 @@ public class Faker {
     /**
      * Returns a string with the '?' characters in the parameter replaced with random alphabetic
      * characters.
-     * <p>
      * For example, the string "12??34" could be replaced with a string like "12AB34".
      *
      * @param letterString
-     * @return
+     * @return letter
      */
     public String letterify(String letterString) {
         return fakeValuesService.letterify(letterString);
@@ -239,12 +237,11 @@ public class Faker {
     /**
      * Returns a string with the '?' characters in the parameter replaced with random alphabetic
      * characters.
-     * <p>
      * For example, the string "12??34" could be replaced with a string like "12AB34".
      *
      * @param letterString
      * @param isUpper
-     * @return
+     * @return legger
      */
     public String letterify(String letterString, boolean isUpper) {
         return fakeValuesService.letterify(letterString, isUpper);
@@ -255,7 +252,7 @@ public class Faker {
      * over the incoming string.
      *
      * @param string
-     * @return
+     * @return both
      */
     public String bothify(String string) {
         return fakeValuesService.bothify(string);
@@ -267,7 +264,7 @@ public class Faker {
      *
      * @param string
      * @param isUpper
-     * @return
+     * @return both
      */
     public String bothify(String string, boolean isUpper) {
         return fakeValuesService.bothify(string, isUpper);

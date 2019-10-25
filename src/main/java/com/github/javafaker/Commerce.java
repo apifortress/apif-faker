@@ -43,7 +43,8 @@ public class Commerce {
     }
 
     /**
-     * Generate a random price between 0.00 and 100.00 
+     * Generate a random price between 0.00 and 100.00
+     * @return price
      */
     public String price() {
         return price(0, 100);

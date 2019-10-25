@@ -49,6 +49,7 @@ public class Finance {
 
     /**
      * Generates a random Business Identifier Code
+     * @return bic
      */
     public String bic() {
         return faker.regexify("([A-Z]){4}([A-Z]){2}([0-9A-Z]){2}([0-9A-Z]{3})?");

@@ -10,6 +10,8 @@ public class FakerIDN {
      * {@link IDN#toASCII(String)} is too picky for our needs.  It was throwing exceptions for fa.yml and
      * he.yml as they're Bidi languages and something was causing them to die.  This is kind of a brute force
      * fix but it appears to fix the issue.
+     * @param in input
+     * @return ascii
      */
     public static final String toASCII(String in) {
         try {

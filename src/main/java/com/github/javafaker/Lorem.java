@@ -102,7 +102,7 @@ public class Lorem {
 
     /**
      * Create a sentence with a random number of words within the range (wordCount+1)..(wordCount+6).
-     * @param wordCount
+     * @param wordCount number of words
      * @return a random sentence
      */
     public String sentence(int wordCount) {
@@ -113,8 +113,8 @@ public class Lorem {
      * Create a sentence with a random number of words within the range (wordCount+1)..(wordCount+randomWordsToAdd).</p>
      * 
      * Set {@code randomWordsToAdd} to 0 to generate sentences with a fixed number of words.
-     * @param wordCount
-     * @param randomWordsToAdd
+     * @param wordCount number of words
+     * @param randomWordsToAdd random words
      * @return a random sentence
      */
     public String sentence(int wordCount, int randomWordsToAdd) {

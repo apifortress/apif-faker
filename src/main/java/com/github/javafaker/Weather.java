@@ -18,6 +18,7 @@ public class Weather {
 
     /**
      * Generates a short weather description.
+     * @return description
      */
     public String description() {
         return faker.resolve("weather.description");
